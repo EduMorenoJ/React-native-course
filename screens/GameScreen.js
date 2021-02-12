@@ -1,4 +1,5 @@
-import React,{useState, useRef} from 'react';
+import React,{useState, useRef, useEffect} from 'react';
+//useEffect allow you to run logic after each render cycle
 import {View, Text, StyleSheet, Button, Alert} from 'react-native';
 
 import NumberContainer from '../components/NumberContainer';
@@ -24,9 +25,25 @@ const GameScreen = props => {
     const [currentGuess, setCurrentGuess] = useState(
         generateRandomBetween(1, 100, props.userChoice)
     );
-		const currentLow = useRef(1);
-		const currentHigh = useRef(100);//it's similar to state but if you change its value, the component doesn't rerender
-		//you don't need the component to be redender so you use a reference -> useRef
+
+	const [rounds, setRound] = useState(0);
+	//it's similar to state but if you change its value, the component doesn't rerender
+	const currentLow = useRef(1);
+	const currentHigh = useRef(100);
+	//this unroll the properties of props and store it in the varibles
+	//here is used to pass as a dependenci of useEffect because props is change in
+	//each rerender and it would rerun the useEffect function in each rerender -> no sense
+	const {userChoice, onGameOver} = props;
+	//you don't need the component to be redender so you use a reference -> useRef
+	//the function pass as argument to useEffect will be evaluated after every render cycle
+	useEffect(() =>{
+		if (currentGuess === userChoice){
+			onGameOver(rounds);
+		}
+	}, [currentGuess, userChoice, onGameOver]); 
+	//useEffect second parameter indicates the dependencies that it has
+	//so it will rerund just if one dependencie change but not when rerender
+
 	const nextGuessHandler = direction => {
 		if ((direction === 'lower' && currentGuess < props.userChoice) || (direction ==='greater' && currentGuess > props.userChoice)){
 			Alert.alert('Don\'t lie!', 'You know that this is wrong..', [{text:'Sorry!', style:'cancel'}]);
@@ -41,6 +58,8 @@ const GameScreen = props => {
 
 		const nextNumber = generateRandomBetween(currentLow.current, currentHigh.current, currentGuess);
 		setCurrentGuess(nextNumber);
+		//This line is not clear
+		setRound(curRounds => curRounds + 1);
 	};
 
     
