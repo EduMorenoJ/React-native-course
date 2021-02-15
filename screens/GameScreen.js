@@ -4,7 +4,7 @@ import {View, Text, StyleSheet, Button, Alert} from 'react-native';
 
 import NumberContainer from '../components/NumberContainer';
 import Card from '../components/Card';
-
+import DefaultStyles from '../constants/default_styles';
 
 //funtion outside component due to it not manage reusable data
 //it's a way to improve performance so avoid to rerender it
@@ -62,13 +62,13 @@ const GameScreen = props => {
 		setRound(curRounds => curRounds + 1);
 	};
 
-    
+    //() => nextGuessHandler('lower')
     return (
 		<View style={styles.screen}>
-			<Text>Oponent Guess</Text>
+			<Text style={DefaultStyles.title}>Oponent Guess</Text>
 			<NumberContainer>{currentGuess}</NumberContainer>
 			<Card style={styles.buttonContainer}>
-				<Button title='LOWER' onPress={nextGuessHandler.bind(this,'lower')} />
+				<Button title='LOWER' onPress={() => nextGuessHandler('lower')} />
 				<Button title='GREATER' onPress={nextGuessHandler.bind(this,'greater')}/>
 			</Card>
 
